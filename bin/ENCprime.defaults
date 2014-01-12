@@ -1,0 +1,8 @@
+Codon counts file:ExCodonCount.codcnt
+Nucleotide composition file:ExNucComp.acgtfreq
+Genetic code:1
+Output file prefix:ExResults
+Verbosity:2
+Data Explorer:0
+
+Note: No spaces can exist after the colon...

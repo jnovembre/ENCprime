@@ -1,0 +1,84 @@
+
+
+
+====== ENCprime =======
+
+A program that calculates a codon usage bias summary statistic, Nc'. It is based
+on the effective number of codons statistic Nc (or ENC) developed by Frank
+Wright, but improves upon it by accounting for background nucleotide
+composition. The package includes SeqCount, a companion program that prepares
+FASTA format files for use by ENCprime.
+
+These programs are all distributed free of charge. Please contact me with any
+problems you have with these programs whether it be bugs or built-in
+limitations.
+
+For full user documentation, consult ENCprimedoc.pdf
+
+=== UNIX/Linux distribution ===
+
+For installation, type:
+
+make all
+
+If you have problems, it may be because 'gcc' is not a compiler that is
+available on your system.  If so, find out what is the standard
+compiler, and adjust the makefile accordingly.
+
+The binary executable is configured to be output in the 'bin' subdirectory.
+
+Note: The Unix version runs under Mac OSX.
+
+=== Win32 version ===
+
+For Windows users, Anders Fuglsang
+has kindly provided a zip archive of ENCprime compiled on a Win32 XP system.
+Windows users can also try Fran Supek's Windows-based INCA package for codon
+usage analysis which computes ENCprime among other statistics. As a caution,
+neither program has been extensively tested by this author. Furthermore, Forrest
+Zhang has reported some problems with the Win32 version of SeqCount garbling
+sequence names (6/2/06).
+
+=== Development notes ===
+
+Development Notes:
+
+1/12/14 Moved the source into a github repository.  On occasion users have reported issues with very large files crashing the program.  A TODO item is to recheck and revamp as necessary the memory allocation calls.
+
+2/28/06 Anders Fuglsang found a bug in the calculation of the 3-fold average
+homozygozity when no 3-fold redundant codons are observed. In this case, the
+3-fold average homozygosity is supposed to be estimated by taking the average of
+the 2-fold and 4-fold average homozygosities. The original code took the
+harmonic rather than arithmetic mean. The bug should have had only a small
+effect on datasets for which no 3-fold redudant codons were observed. The
+revised code contains comments showing the bug.
+
+8/23/04 The documentation has been updated to address how ENCprime calculates Nc
+and Nc' when a small number of codons of any particular amino acid has been
+observed. The text helps explain why calculation of Nc by other programs may
+result in different values for short sequences. The basic reason is that
+different programs to compute Nc use different corrections for when there is
+insufficient data.
+
+7/21/03 Multiple users have noticed SeqCount will crash with large files. This
+appears to happen during a calloc call within the program. The source of this
+bug is being investigated. For now, the crashing can be avoided by dividing
+large data files into smaller files and running them in batch.
+
+1/20/03 Mike Cummings found a bug that caused SeqCount to crash when run with
+only a single sequence. The error had to do with how files were being closed,
+and has been fixed. A small bug was also fixed that caused ENCprime to crash
+under MacOSX.
+
+1/8/03 Mike Cummings helped find a bug in the interactive mode of ENCprime. The
+genetic code setting would not change appropriately. This bug has been fixed.
+
+9/11/02 Some small changes to the documentation were made.
+
+9/3/02 A bug in SeqCount's calculation of the nucleotide composition was fixed.
+
+
+
+If you have other problems, consult your local compiling guru, or
+e-mail jnovembre@gmail.com.
+
