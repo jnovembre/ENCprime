@@ -27,7 +27,7 @@ struct sequence {
 void read_file(char *inputfile, int *num_seq,struct sequence *seqs);
 
 int main(int argc, char **argv) {
-  
+
 
   FILE *out, *outfreq,*outgc,*outgccnt;
   char outfilename[MAXLINE];
@@ -42,8 +42,8 @@ int main(int argc, char **argv) {
   int length; // in nucleotides
   int total_length;
   int countwhat;  /* 1=codons 2=nucleotides */
-  char inputfile[40];
-  char input[40];
+  char inputfile[200];
+  char input[200];
   char ch;
   if(argc==4){
     if(!strcmp(argv[1],"-c")){
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
       countwhat=2;
     }else{
       fprintf(stderr,"%s option not recognized.\n",argv[1]);
-      fprintf(stderr,"Standard options are: -c for counting codons and -n for counting nucleotides.\n",argv[1]);
+      fprintf(stderr,"Standard options are: -c for counting codons and -n for counting nucleotides.\n");
       exit(-1);
     }
     sprintf(inputfile,"%s",argv[2]);
@@ -64,13 +64,13 @@ int main(int argc, char **argv) {
   }else{
     do{
       printf("Enter the FASTA-format input filename:\n");
-      scanf("%s",input);	  
+      scanf("%s",input);
       if(!fopen(input,"r")){
-	printf("Cannot find the file %s.\n",input);	    
+	printf("Cannot find the file %s.\n",input);
 	i=1;
       }else{i=0;}
       strcpy(inputfile,input);
-    }while(i);    
+    }while(i);
     getchar(); /* to clean the newline */
     countwhat=0;
     do{
@@ -104,10 +104,10 @@ int main(int argc, char **argv) {
 	  codon[ctr][3]='\0';
 	  ctr++;
 	}
-      } 
+      }
     }
-    
-    
+
+
     for(i=0;i<64;i++) {
       for(j=0;j<strlen(codon[i]);j++) {
 	switch(codon[i][j]) {
@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
 	}
       }
     }
-    
+
     printf("Initializing codon count array...\n");
     for(i=0;i<num_seq;i++){
       for(k=0;k<64;k++) {
@@ -128,7 +128,7 @@ int main(int argc, char **argv) {
       seqs[i].f_A=seqs[i].f_T=seqs[i].f_C=seqs[i].f_G=0;
       seqs[i].codonlength=0;
     }
-    
+
 
     for(i=0;i<64;i++){
     	totals.cod_count[i]=0;
@@ -136,27 +136,27 @@ int main(int argc, char **argv) {
 
     totals.f_A=totals.f_T=totals.f_C=totals.f_G=0.0;
     totals.codonlength=0;
-    
-    printf("Counting codons...\n"); 
+
+    printf("Counting codons...\n");
     for(i=0;i<num_seq;i++){
-      
+
       // Convert to uppercase
       for(j=0;seqs[i].seq[j]!='\0';j++){
 	seqs[i].seq[j]=toupper(seqs[i].seq[j]);
       }
       for(j=0;seqs[i].seq[3*j]!='\0';j++) {
 	for(k=0;(strncmp(seqs[i].seq+3*j,codon[k],3))&&(k<65);k++){
-	  
+
 	};
 
 	seqs[i].cod_count[k]++;
 	seqs[i].codonlength++;
 	totals.cod_count[k]++;
 	totals.codonlength++;
-	
-      }    
+
+      }
     }
-    
+
     strcpy(outfilename,inputfile);
     strcat(outfilename,".codcnt");
 
@@ -176,8 +176,8 @@ int main(int argc, char **argv) {
 
     fprintf(out,"%d\n64\n", num_seq+1);
     fprintf(outfreq,"%d\n64\n", num_seq+1);
-    
-      
+
+
     for(i=0;i<64;i++) {
       fprintf(out,"%s ",codon[i]);
       fprintf(outfreq,"%s ",codon[i]);
@@ -195,7 +195,7 @@ int main(int argc, char **argv) {
       fprintf(out,"\n");
       fprintf(outfreq,"\n");
     }
-    
+
 
     fprintf(out,"Totals> ");
     fprintf(outfreq,"Totals> ");
@@ -203,10 +203,10 @@ int main(int argc, char **argv) {
     	fprintf(out,"%d ",totals.cod_count[i]);
     	fprintf(outfreq,"%f ",(double)totals.cod_count[i]/(double)totals.codonlength);
     }
-    
+
     fclose(out);
     fclose(outfreq);
-    
+
   }else if(countwhat==2){
     printf("Finding nucleotide content...\n");
     total_length=0;
@@ -214,31 +214,31 @@ int main(int argc, char **argv) {
     totals.f_T=0.0;
     totals.f_C=0.0;
     totals.f_G=0.0;
-    
+
     strcpy(outfilename,inputfile);
     strcat(outfilename,".acgtfreq");
-   
-    if((outgc=fopen(outfilename,"w"))==NULL){ 
-      fprintf(stderr, "Couldn't create output nucleotide composition frequency file\n"); 
-      exit(-1);  
-    } 
+
+    if((outgc=fopen(outfilename,"w"))==NULL){
+      fprintf(stderr, "Couldn't create output nucleotide composition frequency file\n");
+      exit(-1);
+    }
 
     strcpy(outfilename,inputfile);
     strcat(outfilename,".acgtcnt");
-   
-    if((outgccnt=fopen(outfilename,"w"))==NULL){ 
-      fprintf(stderr, "Couldn't create output nucleotide composition count file\n"); 
-      exit(-1);  
-    } 
 
-    
+    if((outgccnt=fopen(outfilename,"w"))==NULL){
+      fprintf(stderr, "Couldn't create output nucleotide composition count file\n");
+      exit(-1);
+    }
+
+
     fprintf(outgc,"Nucleotide f_A f_C f_G f_T\n");
     fprintf(outgccnt,"Nucleotide n_A n_C n_G n_T n_Total\n");
-    
+
     for(i=0;i<num_seq;i++) {
       length=0;
       for(j=0;seqs[i].seq[j]!='\0';j++,length++) {
-	
+
 	switch(toupper(seqs[i].seq[j])) {
 	case 'A' : {seqs[i].f_A++; totals.f_A++; break;}
 	case 'T' : {seqs[i].f_T++; totals.f_T++; break;}
@@ -255,7 +255,7 @@ int main(int argc, char **argv) {
 
       fprintf(outgc,"%s> %f %f %f %f\n",seqs[i].name,seqs[i].f_A, seqs[i].f_C, seqs[i].f_G, seqs[i].f_T);
 
-      total_length+=length;  
+      total_length+=length;
     }
 
     fprintf(outgccnt,"Totals> %.0f %.0f %.0f %.0f %d\n",totals.f_A,totals.f_C,totals.f_G,totals.f_T,total_length);
@@ -266,8 +266,8 @@ int main(int argc, char **argv) {
     totals.f_T/=total_length;
 
     fprintf(outgc,"Totals> %f %f %f %f\n",totals.f_A,totals.f_C,totals.f_G,totals.f_T);
-	
-    fclose(outgc);    
+
+    fclose(outgc);
     fclose(outgccnt);
   }
 
@@ -278,7 +278,7 @@ int main(int argc, char **argv) {
 
 void read_file(char *inputfile, int *num_seq,struct sequence *seqs) {
 
-  
+
   int ch;
   FILE *in;
   int seqlength;
@@ -295,7 +295,7 @@ void read_file(char *inputfile, int *num_seq,struct sequence *seqs) {
   ch=getc(in);
 
   for(i=0;i<*num_seq;i++) {
-    
+
     if(!fgets(seqs[i].name,MAXLINE,in)){
       fprintf(stderr, "Specified number of sequences appears to be too high.  Only reading in %d sequences",i);
       *num_seq=i;
@@ -319,7 +319,7 @@ void read_file(char *inputfile, int *num_seq,struct sequence *seqs) {
     if(seqs[i].seq==NULL){
       fprintf(stderr,"Memory allocation failure.  Sequence %s may be too long at %d bases.",seqs[i].name,seqlength);
     }
-    
+
     fseek(in,seqstart,SEEK_SET);
 
 
@@ -330,7 +330,7 @@ void read_file(char *inputfile, int *num_seq,struct sequence *seqs) {
     }
     seqs[i].seq[j]='\0';
   }
-  
+
 }
 
 
