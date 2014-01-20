@@ -52,7 +52,7 @@ struct codon{
 
 /*  non-taxa specific info about each amino acid  */
 struct a_acid{
-  char abbrev;  
+  char abbrev;
   int redun;    /*  redundancy family  */
   struct codon *cods[MAX_REDUN]; /*  array of the codons for one amino acid  */
 };
@@ -66,7 +66,7 @@ struct codon_datum {
   double ex_num;  /*  numerator of expected frequency  */
   double ex_denom; /*  denominator of expected frequency  */
   double ex; /*  expected frequency  */
-  
+
   double p; /*  actual frequency  */
   double bias; /*  bias value  */
 
@@ -103,7 +103,7 @@ struct sequence{
 
   double sumchi;
   int df;
-  double p; 
+  double p;
   double scaledchi; /*  Akashi's scaled chi-square  */
   double N_c;  /*  Wright's effective number of codons for the sequence  */
   double N_c_p; /*  Nc prime  */
@@ -178,7 +178,7 @@ int main (int argc, char **argv){
   /*  calc Nc  */
   /*  output2 file  */
 
-  
+
   char codefile[LINE_LENGTH];
   char datafile[LINE_LENGTH];
   char acgtfile[LINE_LENGTH];
@@ -187,7 +187,7 @@ int main (int argc, char **argv){
   int i,j,k;
   char ch;
   FILE *in;
-  codes=(char**)calloc((size_t)NUM_CODES,sizeof(char*));	
+  codes=(char**)calloc((size_t)NUM_CODES,sizeof(char*));
   for(i=0;i<NUM_CODES;i++) {
   	codes[i]=(char*)calloc((size_t)MAX_CODE_LENGTH,sizeof(char));
   }
@@ -228,11 +228,11 @@ int main (int argc, char **argv){
 	#endif
 #endif
 
-  
+
   printf("--ENCprime Program--\n");
 
   if(argc==1){
-    
+
     while(1){
       /*printf("Menu-driven action baby.\n");*/
       printf("====Main Menu====\n");
@@ -242,12 +242,12 @@ int main (int argc, char **argv){
       printf("(4) Output file name:\t\t\t%s\n",outputfile);
       printf("(5) Verbosity: \t\t\t\t%d \t(0=silent, 1=show input, 2=show input and pause)\n",verbosity);
       printf("(6) Data Explorer: \t\t\t%d \t(0=Enter data explorer, 1=Exit immediately after analysis)\n",quick_mode);
-  	  
+
       do{
 	printf("\nType 1-6 and return to make a change to the options...\n");
 	printf("Type 7 and return to begin analysis, or type 8 to exit.\n");
 	do
-	  ch=getchar(); 
+	  ch=getchar();
 	while(ch=='\n');
 	j=atoi(&ch);
       }while((j<1)||(j>8));
@@ -257,13 +257,13 @@ int main (int argc, char **argv){
       case 1: {
 	do{
 	  printf("Enter the codon counts filename or 0 to cancel:\n");
-	  scanf("%s",input);	  
+	  scanf("%s",input);
 	  if((strlen(input)==1)&&(atoi(input)==0)) break;
 	  if(!fopen(input,"r")){
-	    printf("Cannot find the file %s.\n",input);	    
+	    printf("Cannot find the file %s.\n",input);
 	    i=1;
-	  }else{i=0;sprintf(datafile,input);}
-	  
+	  }else{i=0;sprintf(datafile,"%s",input);}
+
 	}while(i);
 
 	break;
@@ -271,13 +271,13 @@ int main (int argc, char **argv){
       case 2: {
 	do{
 	  printf("Enter the nucleotide composition filename or 0 to cancel:\n");
-	  scanf("%s",input);	  
+	  scanf("%s",input);
 	  if((strlen(input)==1)&&(atoi(input)==0)) break;
 	  if(!fopen(input,"r")){
-	    printf("Cannot find the file %s.\n",input);	    
+	    printf("Cannot find the file %s.\n",input);
 	    i=1;
-	  }else{i=0;sprintf(acgtfile,input);}
-	  
+	  }else{i=0;sprintf(acgtfile,"%s",input);}
+
 	}while(i);
 
 	break;
@@ -285,7 +285,7 @@ int main (int argc, char **argv){
       case 3: {
 	do{
 	  printf("Enter the genetic code's Genbank id number or the filename or 0 to cancel:\n");
-	  scanf("%s",input);	  
+	  scanf("%s",input);
 
 
 	  k=strlen(input);
@@ -296,14 +296,14 @@ int main (int argc, char **argv){
 	      printf("No code %d.  Try again.\n",i);
 	      i=1;
 	    }  else {
-	      sprintf(codefile,input);
+	      sprintf(codefile,"%s",input);
 	      i=0;
 	    }
 	  } else if(!fopen(input,"r")){
-	    printf("Cannot find the file %s.\n",input);	    
+	    printf("Cannot find the file %s.\n",input);
 	    i=1;
-	  } else{i=0;sprintf(codefile,input);}
-	  
+	  } else{i=0;sprintf(codefile,"%s",input);}
+
 	}while(i);
 
 	break;
@@ -312,18 +312,18 @@ int main (int argc, char **argv){
 	printf("Enter the output file's prefix:\n");
 	scanf("%s",input);
 	if((strlen(input)==1)&&(atoi(input)==0)) break;
-	sprintf(outputfile,input);
+	sprintf(outputfile,"%s",input);
 	break;
       }
       case 5:{
 	do{
 	  printf("Enter the verbosity (0,1,2):\n");
-	  scanf("%d",&verbosity);	  
+	  scanf("%d",&verbosity);
 	}while((verbosity<0)||(verbosity>2));
 	break;
       }
       case 6:{
-	do{	
+	do{
 	  printf("Skip the data explorer? (1=yes, 0=no)\n");
 	  scanf("%d",&quick_mode);
 	}while((quick_mode<0)||(quick_mode>1));
@@ -331,25 +331,25 @@ int main (int argc, char **argv){
       }
 
       }
-    
+
     }
     getchar();
   } else if(argc<6) {
     printf("Usage: %s <cnt file> <nuc comp file> <gen code file> <output file> <verbosity> <-q for quick>\n",argv[0]);
     exit(-1);
   } else {
-    sprintf(datafile,argv[1]);
-    sprintf(acgtfile,argv[2]);
-    sprintf(codefile,argv[3]);
-    sprintf(outputfile,argv[4]);
+    sprintf(datafile,"%s",argv[1]);
+    sprintf(acgtfile,"%s",argv[2]);
+    sprintf(codefile,"%s",argv[3]);
+    sprintf(outputfile,"%s",argv[4]);
     verbosity=atoi(argv[5]);
     if(argc==7) {
       if(!strcmp(argv[6],"-q")) {
 	quick_mode=1;
-      } 
+      }
     }
   }
-  
+
   printf("Codon usage file: %s\n",datafile);
   printf("Null nucleotide usage file: %s\n",acgtfile);
   printf("Genetic code file: %s\n",codefile);
@@ -358,16 +358,16 @@ int main (int argc, char **argv){
 
   init_codes();
   get_code(codefile);
-  get_codon_count_data(datafile);  
+  get_codon_count_data(datafile);
   get_acgt(acgtfile);
-  
+
   calc_cod_data();
 
   calc_n_aa();
   test_null();
-  calc_F();    
+  calc_F();
   calc_Nc();  /*  now calculate the N_c for the taxa  */
-  calc_sumchi();      
+  calc_sumchi();
 
   output2screen();
 
@@ -378,7 +378,7 @@ int main (int argc, char **argv){
   }
   free(codes);
 }
-  
+
 
 void get_code(char *filename) {
   int ch, pos;
@@ -406,7 +406,7 @@ void get_code(char *filename) {
       fprintf(stderr,"Error opening genetic code file %s\n", filename);
       exit(-1);
     }
-  
+
     printf("Reading in genetic code...\n");
 
     codeID=0;
@@ -414,11 +414,11 @@ void get_code(char *filename) {
     do{
       i++;
       codes[codeID][i]=fgetc(in);
-    }while((ch!=EOF)&&(i<MAX_CODE_LENGTH));    
+    }while((ch!=EOF)&&(i<MAX_CODE_LENGTH));
 
     printf("Closing genetic code data file...\n");
     fclose(in);
- 
+
   }
 
   pos=0;
@@ -434,21 +434,21 @@ void get_code(char *filename) {
     while((aa[i].abbrev!=ch)&&(aa[i].abbrev!='\0')){
       i++;
     };
-    
+
     n_aa=i+1;
     if(n_aa>MAX_AA) {
       fprintf(stderr,"More amino acids (%d) in genetic code than program allows(%d).\n",n_aa,MAX_AA);
       exit(-1);
     }
-    
+
     aa[i].abbrev=ch;
     cod[k].aa=&aa[i];
     pos++;
   }
-    
+
   /*  skip to second line  */
   do pos++; while(codes[codeID][pos]!='=');
-  
+
   for (i=0;i<3;i++){
     /*  skip to next line   */
     do pos++; while(codes[codeID][pos]!='=');pos++;
@@ -460,11 +460,11 @@ void get_code(char *filename) {
 
     }
   }
-  
+
   /*  add null character  */
   for(k=0;k<64;k++)
     cod[k].seq[3]='\0';
-  
+
   /*  calculate redundancy of each amino acid  */
   for(i=0;i<n_aa;i++){
     aa[i].redun=0;
@@ -475,20 +475,20 @@ void get_code(char *filename) {
 	aa[i].cods[l]=&cod[k];
 	l++;
       }
-    }    
+    }
   }
-  
+
   /*  Calculate variable sites of each codon   */
   for(k=0;k<MAX_CODONS;k++){
-    
+
     /* initialize vars  */
     for(i=0;i<3;i++){
       cod[k].var_sites[i]=0;
     };
-    
+
     /*  calculate vars  */
     for(i=0;i<MAX_CODONS;i++){
-      
+
       /*  if same amino acid  */
       /*  1.  up redundancy counter  */
       /*  2.  run through sites on sequence and mark variable ones  */
@@ -503,9 +503,9 @@ void get_code(char *filename) {
       }
     }
   }
-  
+
   if(verbosity>0) {
-    printf("\n----Genetic code----\n");    
+    printf("\n----Genetic code----\n");
     for(k=0;k<64;k++){
       printf("%s %c %d %d %d %d / ", cod[k].seq, cod[k].aa->abbrev,cod[k].aa->redun, cod[k].var_sites[0], cod[k].var_sites[1], cod[k].var_sites[2]);
       if(((k+1)%5)==0) printf("\n");
@@ -518,14 +518,14 @@ void get_code(char *filename) {
       while(ch!='\n');
     }
   }
-  
+
 }
 
 
 void get_codon_count_data(char *filename){
-    
+
   FILE *in;
-  char cod_seq[3];
+  char cod_seq[4];
   char ch;
   int i, j,k,l;
   if(!(in=fopen(filename,"r"))){
@@ -547,26 +547,26 @@ void get_codon_count_data(char *filename){
 
   /*  read codon sequences  */
   for (i=0;i<n_cod;i++){
+
     fscanf(in,"%s ",cod_seq);
     cod_seq[3]='\0';
     /*  assign codon pointer to appropriate codon   */
     k=0;
-        
+
     while(strcmp(cod_seq,cod[k].seq)!=0){
       k++;
-      if(k>64) { 
-	k=-1; 
-	fprintf(stderr,"The codon listed as %s in the codon usage data file has no match \nin the genetic code file.  Check both files and adjust accordingly.\n"
-);
+      if(k>64) {
+	k=-1;
+	fprintf(stderr,"The codon listed as %s in the codon usage data file has no match \nin the genetic code file.  Check both files and adjust accordingly.\n",cod_seq);
 
 	exit(-1);
-      }; 
-    }; 
+      };
+    };
     for(j=0;j<n_seq;j++) {
       seq[j].cod_data[i].cod=&cod[k];
     }
 
-  }; 
+  };
 
     printf("\n");
     /*  establish pointers from aa_stats to amino acids  */
@@ -574,7 +574,7 @@ void get_codon_count_data(char *filename){
     for(j=0;j<n_seq;j++) {
       seq[j].a_stat[i].aa=&aa[i];
     }
-    
+
   }
 
   /*  Connect seq.a_stat to its respective codons  */
@@ -586,7 +586,7 @@ void get_codon_count_data(char *filename){
 	  seq[j].a_stat[k].cods[l]=&seq[j].cod_data[i];
 	  l++;
 	}
-      } 
+      }
     }
   }
 
@@ -604,17 +604,17 @@ void get_codon_count_data(char *filename){
 
     /*  then assign to the name until you hit a colon (or LF or CR)  */
     for(k=0;k<MAX_NAME_LENGTH;k++) {
-      
-      if((ch==13)||(ch==10)||(ch=='>')) { 
+
+      if((ch==13)||(ch==10)||(ch=='>')) {
       	seq[j].name[k]='\0';
-	break; 
+	break;
       } else {
 	seq[j].name[k]=ch;
 	ch=fgetc(in);
       }
     }
 
-    
+
     /*  read the data and count total codons  */
     seq[j].n_cod_obs=0;
     for (i=0;i<n_cod;i++){
@@ -657,7 +657,7 @@ void get_codon_count_data(char *filename){
 
 
 void get_acgt(char *filename) {
-  
+
   FILE *out;
   FILE *in;
   int i,j,k,l;
@@ -670,11 +670,11 @@ void get_acgt(char *filename) {
     ch=getchar();
     exit(-1);
   }
-    
+
   printf( "Reading nucleotide composition data file...\n");
   /*  grab a character  */
   ch=fgetc(in);
-  if(ch=='C'){      
+  if(ch=='C'){
     expected_given=1;
     printf("Reading file as expected frequencies for each codon...\n");
   } else if (ch=='N'){
@@ -682,50 +682,50 @@ void get_acgt(char *filename) {
     printf("Reading file as background nucleotide compositions...\n");
   }
   /*  then read until you hit a LF or CR)  */
-  for(k=0;k<MAX_CODE_LENGTH;k++) {    
-    if((ch==13)||(ch==10)) { 
-      break; 
+  for(k=0;k<MAX_CODE_LENGTH;k++) {
+    if((ch==13)||(ch==10)) {
+      break;
     } else {
       ch=fgetc(in);
     }
   }
-  
+
   for(i=0;i<n_seq;i++){
 
     /* Read until you hit the colon */
-    for(k=0;k<MAX_NAME_LENGTH;k++) {    
-      if(ch=='>') { 
-	break; 
+    for(k=0;k<MAX_NAME_LENGTH;k++) {
+      if(ch=='>') {
+	break;
       } else {
 	ch=fgetc(in);
       }
     }
-    
+
 
     if(expected_given){
       for(k=0;k<n_cod;k++) {
-	fscanf(in," %lf",&seq[i].cod_data[k].ex);	
+	fscanf(in," %lf",&seq[i].cod_data[k].ex);
       }
     }else{
       fscanf(in," %lf %lf %lf %lf",&seq[i].f_A,&seq[i].f_C,&seq[i].f_G,&seq[i].f_T);
     }
 
     /*  then read until you hit a LF or CR)  */
-    for(k=0;k<MAX_CODE_LENGTH;k++) {    
-      if((ch==13)||(ch==10)) { 
-	break; 
+    for(k=0;k<MAX_CODE_LENGTH;k++) {
+      if((ch==13)||(ch==10)) {
+	break;
       } else {
 	ch=fgetc(in);
       }
     }
-    
+
   }
   printf("Closing nucleotide composition data file...\n");
-  
+
   fclose(in);
   if (verbosity>0) {
     printf("\n----Data from nucleotide composition data file----\n");
-   
+
     for(i=0;i<n_seq;i++){
       if(expected_given){
 	printf("%s ",seq[i].name);
@@ -764,7 +764,7 @@ void calc_cod_data(){
       /* Check input frequencies... */
 
     printf("Checking expected frequencies sum to 1 for each amino acid.\n");
-    
+
     for(j=0;j<n_seq;j++) {
       for(i=0;i<n_aa;i++){
 	sum=0;
@@ -784,13 +784,13 @@ void calc_cod_data(){
 	  }
 	}
       }
-      
+
     }
   }else {
     /*  calculate expected frequencies...  */
     printf("Calculating expected frequencies...\n");
-    
-      
+
+
     for(j=0;j<n_seq;j++){
 
 
@@ -804,13 +804,13 @@ void calc_cod_data(){
 	  if(seq[j].cod_data[i].cod->var_sites[k]){
 	    /*  if A, numerator = numerator * f_A  */
 	    if(toupper(seq[j].cod_data[i].cod->seq[k])=='A') seq[j].cod_data[i].ex_num*=seq[j].f_A;
-	    if(toupper(seq[j].cod_data[i].cod->seq[k])=='T') seq[j].cod_data[i].ex_num*=seq[j].f_T;    
-	    if(toupper(seq[j].cod_data[i].cod->seq[k])=='C') seq[j].cod_data[i].ex_num*=seq[j].f_C;    
-	    if(toupper(seq[j].cod_data[i].cod->seq[k])=='G') seq[j].cod_data[i].ex_num*=seq[j].f_G;    
-	  }   
+	    if(toupper(seq[j].cod_data[i].cod->seq[k])=='T') seq[j].cod_data[i].ex_num*=seq[j].f_T;
+	    if(toupper(seq[j].cod_data[i].cod->seq[k])=='C') seq[j].cod_data[i].ex_num*=seq[j].f_C;
+	    if(toupper(seq[j].cod_data[i].cod->seq[k])=='G') seq[j].cod_data[i].ex_num*=seq[j].f_G;
+	  }
 	}
       }
-      
+
       /*  cycle through the codons again, this time summing up the ex_nums...  */
       for(i=0;i<n_cod;i++) {
 	/*  initialize the denominator  */
@@ -822,14 +822,14 @@ void calc_cod_data(){
 	    seq[j].cod_data[i].ex_denom=seq[j].cod_data[i].ex_denom+seq[j].cod_data[k].ex_num;
 	  }
 	}
-      }    
-      
+      }
+
       for(i=0;i<n_cod;i++){
 	if(seq[j].cod_data[i].ex_denom==0.0) seq[j].cod_data[i].ex_denom=1;
-	seq[j].cod_data[i].ex=seq[j].cod_data[i].ex_num/seq[j].cod_data[i].ex_denom;      
+	seq[j].cod_data[i].ex=seq[j].cod_data[i].ex_num/seq[j].cod_data[i].ex_denom;
       }
     }/*  end cycling through sequences   */
-    
+
   }
 
   printf("Calculating observed frequencies...\n");
@@ -845,7 +845,7 @@ void calc_cod_data(){
 	  p_denom=p_denom+seq[j].cod_data[k].n;
 	}
       } /*  compare to the next codon  */
-      
+
       if(p_denom==0) {
 	seq[j].cod_data[i].p=0;
       }	else {
@@ -873,7 +873,7 @@ void calc_n_aa(){
 	seq[k].a_stat[i].n+=seq[k].a_stat[i].cods[j]->n;
       }
     }
-  }  
+  }
 }
 
 
@@ -895,46 +895,46 @@ void test_null() {
 	seq[j].a_stat[i].chisq=-2.0;
 	continue;
       }
-     
+
       /*  add up n*bias^2 / ex to get chisq values  */
-      
+
       for(k=0;k<n_cod;k++){
-	
+
 	/* if(seq[j].cod_data[k].ex==0) seq[j].cod_data[k].ex=.01;  */
 	if(aa[i].abbrev==seq[j].cod_data[k].cod->aa->abbrev) {
 
 	  /* option to catch extremely low expected values	   */
   	  if(seq[j].cod_data[k].ex<eps*eps) {
-	    seq[j].a_stat[i].chisq=-1; 
+	    seq[j].a_stat[i].chisq=-1;
 	    seq[j].a_stat[i].Bg=0;
 	    printf("A very small expectation (less than %lf).  Sequence: %s Codon: %s, Expectation: %lf \n This is not necessarily a problem, but it usually only occurs if an error reading the input files has occurred.  Check to make sure nucleotide composition file is being read in correctly by setting verbosity to 1.  Also, check to make sure the order of sequences in the same in both the nucleotide content file and the codon counts file.\n",eps*eps,seq[j].name,seq[j].cod_data[k].cod->seq,seq[j].cod_data[k].ex);
 	    seq[j].a_stat[i].bad_ex=1;
 	  }else{
-	    seq[j].a_stat[i].chisq+=(pow(seq[j].cod_data[k].bias,2.0)/seq[j].cod_data[k].ex)*seq[j].a_stat[i].n; 
+	    seq[j].a_stat[i].chisq+=(pow(seq[j].cod_data[k].bias,2.0)/seq[j].cod_data[k].ex)*seq[j].a_stat[i].n;
 	    if(seq[j].cod_data[k].p!=seq[j].cod_data[k].ex) {
 	      seq[j].a_stat[i].Bg+=fabs((seq[j].cod_data[k].p/seq[j].cod_data[k].ex)-1.0);
 
 	    }else {
 	      seq[j].a_stat[i].Bg=0;
 	    }
-	  }; 
+	  };
 	}
-	
+
       } /*  end codon cycle  */
-      
+
       /*  calculate p value from gamma distribution (X^2)  */
       if(!seq[j].a_stat[i].bad_ex)
       	seq[j].a_stat[i].p=1-GammaP(0.5*(aa[i].redun-1), 0.5*(seq[j].a_stat[i].chisq));
-      else 
+      else
       	seq[j].a_stat[i].p=1;
-      
+
       /* if p < 0.05, then reject null  */
       if(seq[j].a_stat[i].p<alpha) {
 		seq[j].a_stat[i].m=1;
       } else {
       	seq[j].a_stat[i].m=0;
       }
-      
+
       /*  Divide Bg value by redudancy of amino acid  */
       seq[j].a_stat[i].Bg/=(double)aa[i].redun;
 
@@ -949,7 +949,7 @@ void calc_F(){
   double sum_p2;
   /*  see Frank Wright paper 1990 Gene 87:23-29   */
 
-  for(j=0;j<n_seq;j++) {   
+  for(j=0;j<n_seq;j++) {
     /*  cycle through all amino acids and calc F for each  */
     for(k=0;k<n_aa;k++) {
 
@@ -962,7 +962,7 @@ void calc_F(){
       for(i=0;i<aa[k].redun;i++){
 	sum_p2+=pow((seq[j].a_stat[k].cods[i]->p),2.0);
       }
-      
+
       /*  if enough observations that chi-sq is legit (i.e. >5)  */
       /*  calculate F'  */
       /*  else set F'= 1/redun... as a conservative assumption  */
@@ -990,12 +990,12 @@ void calc_sumchi() {
 
     for(i=0;i<n_aa;i++){
       if(seq[j].a_stat[i].chisq>-1) {
-	seq[j].sumchi+=seq[j].a_stat[i].chisq;  
+	seq[j].sumchi+=seq[j].a_stat[i].chisq;
 	seq[j].df+=seq[j].a_stat[i].aa->redun-1;
       }
       seq[j].B_KM+=((double)seq[j].a_stat[i].n/(double)seq[j].n_cod_obs)*seq[j].a_stat[i].Bg;
-    }   
-    
+    }
+
     seq[j].p=1-GammaP(0.5*(seq[j].df), 0.5*(seq[j].sumchi));
     seq[j].scaledchi=seq[j].sumchi/seq[j].n_cod_obs;
   }
@@ -1003,7 +1003,7 @@ void calc_sumchi() {
 
 
 void calc_Nc() {
-  
+
   double F_tot[MAX_REDUN+1];
   double F_tot_p[MAX_REDUN+1];
   double F_bar[MAX_REDUN+1];
@@ -1013,7 +1013,7 @@ void calc_Nc() {
   int n_fold_o[MAX_REDUN+1];
   int i,j,k,l;
 
-  printf("Calculating Nc and Nc'...\n"); 
+  printf("Calculating Nc and Nc'...\n");
   for(k=0;k<n_seq;k++){
 
     seq[k].N_c=0;
@@ -1026,7 +1026,7 @@ void calc_Nc() {
       n_fold_o[i]=0;
       F_tot[i]=0;
       F_tot_p[i]=0;
-      
+
       /*  scan all amino acids to see if they are included in redundancy class  */
       for(j=0;j<n_aa;j++) {
 
@@ -1042,23 +1042,23 @@ void calc_Nc() {
 	    F_tot[i]+=seq[k].a_stat[j].F;
 	    n_fold[i]++;
 	  }
-	  
+
 	  /*  only if F_p was calculated above  */
 	  if(seq[k].a_stat[j].F_p!=-1) {
 	    F_tot_p[i]+=seq[k].a_stat[j].F_p;
 	    n_fold_p[i]++;
 	  }
 
-	}    
+	}
       }
-      
+
     } /*  end redudancy class  */
-    
+
 
     for(i=1;i<MAX_REDUN+1;i++) {
-      
+
       /*  get F_bar  */
-      if(n_fold[i]) 
+      if(n_fold[i])
         F_bar[i]=F_tot[i]/n_fold[i];
       else if(i==3 && n_fold[2]&&n_fold[4])
         /* Bug found by Anders Fuglsang  */
@@ -1068,7 +1068,7 @@ void calc_Nc() {
       else /*  assume equal usage to be conservative     */
         F_bar[i]=1/i;
 
-      if(n_fold_p[i]) 
+      if(n_fold_p[i])
         F_bar_p[i]=F_tot_p[i]/n_fold_p[i];
       else if(i==3 && n_fold_p[2]&&n_fold_p[4])
         /* Bug found by Anders Fuglsang */
@@ -1077,7 +1077,7 @@ void calc_Nc() {
         F_bar_p[i]=(F_tot_p[2]/n_fold_p[2]+F_tot_p[4]/n_fold_p[4])*0.5;
       else /*  assume equal usage to be conservative  */
       	F_bar_p[i]=1/i;
-  
+
       /*  Force F_bar to be bounded (1/k,1)  */
 
       /*  To prevent divide by zero's if F_bar[i]<eps set to 1/redun  */
@@ -1088,8 +1088,8 @@ void calc_Nc() {
 	seq[k].N_c+=n_fold_o[i]/F_bar[i];
 	seq[k].N_c_p+=n_fold_o[i]/F_bar_p[i];
       }
-    }    
-  } 
+    }
+  }
 }
 
 
@@ -1104,19 +1104,19 @@ void output2screen(){
   double scaledchi_d,N_c_d,N_c_p_d;
 
   for(j=0;j<n_seq;j++){
-    
+
     scaledchi_d=seq[j].scaledchi-scaledchi_m;
     N_c_d=seq[j].N_c-N_c_m;
     N_c_p_d=seq[j].N_c_p-N_c_p_m;
 
-    scaledchi_m+=scaledchi_d/(j+1);   
+    scaledchi_m+=scaledchi_d/(j+1);
     N_c_m+=N_c_d/(j+1);
     N_c_p_m+=N_c_p_d/(j+1);
 
-    scaledchi_v+=scaledchi_d*(seq[j].scaledchi-scaledchi_m);   
+    scaledchi_v+=scaledchi_d*(seq[j].scaledchi-scaledchi_m);
     N_c_v+=N_c_d*(seq[j].N_c-N_c_m);
     N_c_p_v+=N_c_p_d*(seq[j].N_c_p-N_c_p_m);
-          
+
   }
   scaledchi_v/=n_seq;
   N_c_v/=n_seq;
@@ -1124,10 +1124,10 @@ void output2screen(){
 
   scaledchi_CV=sqrt(scaledchi_v)/scaledchi_m;
   N_c_CV=sqrt(N_c_v)/N_c_m;
-  N_c_p_CV=sqrt(N_c_p_v)/N_c_p_m;  
+  N_c_p_CV=sqrt(N_c_p_v)/N_c_p_m;
 
   /* printf("\n%s@%lf %lf %lf %lf %lf %lf %lf %lf %lf\n",outputfile,N_c_m,N_c_p_m,scaledchi_m,N_c_v,N_c_p_v,scaledchi_v,N_c_CV,N_c_p_CV,scaledchi_CV);  */
-  
+
   if(!quick_mode) {
     printf("\n\n----Data Explorer----\n");
 
@@ -1149,35 +1149,35 @@ void output2screen(){
       printf("\n\tKarlin and Mrazek B*(a): %lf",seq[j].B_KM);
       printf("\n\tNc:  %lf \n\tNcp: %lf\n", seq[j].N_c, seq[j].N_c_p);
       printf("\tNum cods observed: %d\n",seq[j].n_cod_obs);
-      
+
       /*  clean the newline off the buffer  */
       c=getchar();
-      
+
       while(1){
 	do{
 	  printf("Which amino acid? Enter the one-letter abbrev (0 for new sequence): \n");
 	  c=getchar();
 	  while(getchar()!='\n') continue;
 	  for(i=0;i<(n_aa);i++){
-	    if((aa[i].abbrev==toupper(c))) {
+	    if(aa[i].abbrev==toupper(c)) {
 	      k=i;
 	      break;
-	    } 
+	    }
 	    k=-1;
 	  }
 	}while((k==-1)&&(c!='0'));
-	
-	if(c=='0') break;  
-	
+
+	if(c=='0') break;
+
 	printf("Amino acid: %c \t Redun: %d  Obs: %d  Chisq: %lf \n", aa[k].abbrev, aa[k].redun, seq[j].a_stat[k].n,seq[j].a_stat[k].chisq);
 	printf("   F: %lf F_p: %lf\n",seq[j].a_stat[k].F,seq[j].a_stat[k].F_p);
 	for(i=0;i<aa[k].redun;i++){
-	  printf("   %s %c ", aa[k].cods[i]->seq, aa[k].abbrev);	  
+	  printf("   %s %c ", aa[k].cods[i]->seq, aa[k].abbrev);
 	  printf("%4d ", seq[j].a_stat[k].cods[i]->n);
 	  printf("f_obs: %.4lf f_ex: %.4lf diff: %.4lf\n", seq[j].a_stat[k].cods[i]->p, seq[j].a_stat[k].cods[i]->ex,seq[j].a_stat[k].cods[i]->bias);
-	  
+
 	}
-	
+
       }
     }
   }
@@ -1186,7 +1186,7 @@ void output2screen(){
 
 
 void output2file(char *filename) {
-  
+
   FILE *out;
   int i,j,k,l;
   char ch;
@@ -1200,7 +1200,7 @@ void output2file(char *filename) {
   for(j=0;j<n_seq;j++) {
     fprintf(out, "%s: %.4f %.4f %.4f %.4f %d %.4f %.4f %d\n", seq[j].name, seq[j].N_c,seq[j].N_c_p,seq[j].scaledchi,seq[j].sumchi,seq[j].df,seq[j].p,seq[j].B_KM,seq[j].n_cod_obs);
   }
-  
+
   fclose(out);
 
 }
@@ -1331,7 +1331,7 @@ void init_codes(){
   Base3  = TCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAG \
  ");
 
- 
+
 }
 
 
@@ -1345,17 +1345,17 @@ void init_codes(){
 /*************
 *  FUNCTION:  double GammaP
 *  PURPOSE:   Compute the incomplete Gamma function.  P(a,x)
-			  
-			
+
+
 *  INPUT:     double a;
 			  double x;
-   
+
    	Requires the functions IncGammaCF and IncGammaSer
-   	
+
    AUTHOR:  Eric C. Anderson
    DATE:  18 AUGUST 2000
 *************/
-double 
+double
 GammaP(double a, double x) {
 	if(x<0.0 || a <= 0.0)  {
 		printf("\n\nx<0.0 or a<=0.0 in GammaP\n\nExiting to system...");
@@ -1373,24 +1373,24 @@ GammaP(double a, double x) {
 
 /*************
 *  FUNCTION:  double IncGammaSer
-*  PURPOSE:   Compute the incomplete Gamma function by its series representation.  
+*  PURPOSE:   Compute the incomplete Gamma function by its series representation.
 			  Note that this computes the part from 0 to x (called P(a,x) )
-			  
+
 			  This is the preferred method when x < (a+1)
-			
+
 *  INPUT:     double x
 
 	This function is based on the series representation described
-	in "Numerical Recipes in C" (Cambridge University Press), 
-   
+	in "Numerical Recipes in C" (Cambridge University Press),
+
    AUTHOR:  Eric C. Anderson
    DATE:  18 AUGUST 2000
 *************/
 #define MAXIT 100
 #define PRECIS 1.0e-7
 
-double 
-IncGammaSer(double a, double x) 
+double
+IncGammaSer(double a, double x)
 {
   double old_funct, new_funct;  /*  this is what we ultimately want to return;  */
   double term;  /*  the next term to be added to the series  */
@@ -1398,18 +1398,18 @@ IncGammaSer(double a, double x)
 	double numer;  /*  the normalizing constant---Gamma(a).  Also turns out to be the numerator of the terms that  */
 	/*  get summed.  */
 	double denom;  /*  the denominator of the terms that get summed  */
-	
+
 	/*  set value of the log of the normalizing constant  */
 	numer = exp(LogGamma(a));
 	denom = a * numer;
-	
+
 	term = numer/denom;
 	old_funct = term;
-	
+
 	for(i=1;i<MAXIT;i++)  {
 	  term *= 1.0/(a + i) * x;  /*  the terms may be computed recursively  */
 		new_funct = old_funct + term;
-		
+
 		/*  check for convergence  */
 		if( fabs(new_funct - old_funct) < PRECIS)  {
 			break;
@@ -1418,13 +1418,13 @@ IncGammaSer(double a, double x)
 			old_funct = new_funct;
 		}
 	}
-	
+
 	if(i >= MAXIT - .001) {
 	  /*  done here we warn if it failed to converge.   */
 		printf("\n\nFailed to converge in IncGammaSer\n\n");
 		exit(1);
 	}
-	
+
 	/*  otherwise, we return the result  */
 	/*  first we have to add the coefficients and normalize it:  */
 	new_funct *= exp(-x) * pow(x,a) * 1.0/numer;
@@ -1436,18 +1436,18 @@ IncGammaSer(double a, double x)
 /*************
 *  FUNCTION:  double IncGammaCF
 *  PURPOSE:   Compute the incomplete Gamma function by its continued
-			  fraction representation.  Note that this computes the 
+			  fraction representation.  Note that this computes the
 			  part from x to infinity (called Q(a,x) )
-			  
+
 			  This is the preferred method for x > (a + 1)
-			
+
 *  INPUT:     double x
 
 	This function is based on the continued fraction representation described
 	in "Numerical Recipes in C" (Cambridge University Press), and evaluated using
 	Lentz's method for continued fractions.  Basically following the pseudocode on
 	page 171.
-   
+
    AUTHOR:  Eric C. Anderson
    DATE:  18 AUGUST 2000
 *************/
@@ -1455,24 +1455,24 @@ IncGammaSer(double a, double x)
 #define MAXIT 100
 #define PRECIS 2.0e-7
 
-double 
-IncGammaCF(double a, double x) 
+double
+IncGammaCF(double a, double x)
 {
   double funct;  /*  this is what we ultimately want to return;  */
 	double A,B,C,D;
 	double Delta;
 	double j;
 	double log_normo;  /*  the log of the normalizing constant---Gamma(a)  */
-	
+
 	/*  set value of the log of the normalizing constant  */
 	log_normo = LogGamma(a);
-	
+
 	/*  here for the zero subscript part:  */
 	B = 0.0;  /*  b_0 is really zero, so we just make it tiny  */
 	funct = SMIDGEN;
 	C = funct;
 	D = 0.0;
-	
+
 	/*  then for the 1 subscript part things are sort of different still  */
 	A = 1.0;
 	B = x + 1.0 - a;
@@ -1484,15 +1484,15 @@ IncGammaCF(double a, double x)
 	Delta = C * D;
 	funct = Delta * funct;
 	/*  don't even bother checking for convergence after this first "iteration"  */
-	
-	
+
+
 	/*  now we iterate through the 2,3... and so forth subscript parts until converged  */
 	/*  so each loop corresponds to the j+1-th subscript of the continued fraction  */
 	for(j=1.0;j<MAXIT;j++)  {
 	  /*  now, we define the new values for A and B on the j-th level of the continued fraction  */
 		A = -j * (j - a);
-		B = x + 1.0 + (2 * j) - a;	
-		
+		B = x + 1.0 + (2 * j) - a;
+
 		D = B + A * D;
 		if(fabs(D) < SMIDGEN) D = SMIDGEN;
 		C = B + A/C;
@@ -1508,11 +1508,11 @@ IncGammaCF(double a, double x)
 			return(funct);
 		}
 	}
-	
+
 	/*  done here we warn if it failed to converge.  Should never get here  */
 	printf("\n\nFailed to converge in IncGammaCF\n\n");
 	exit(1);
-	
+
 	return(-55.55);  /*  just put this in so that it doesn't give a compile warning  */
 	/*  about having no return value.  */
 
@@ -1524,16 +1524,16 @@ IncGammaCF(double a, double x)
 /*************
 *  FUNCTION:  double LogGamma
 *  PURPOSE:   Compute log of the Gamma Function
-			
+
 *  INPUT:     double x
 
 	This function is based on the six term series of Lanczos as described
-	in "Numerical Recipes in C" (Cambridge University Press).  I use the 
-	choice of gamma = 5 and N = 6.  
-	
+	in "Numerical Recipes in C" (Cambridge University Press).  I use the
+	choice of gamma = 5 and N = 6.
+
 *************/
-double 
-LogGamma(double x) 
+double
+LogGamma(double x)
 {
   /*  declare the coefficients in the series as a static double array  */
 	static double Coeff[6] = {76.18009172947146,-86.50532032941677,
@@ -1542,16 +1542,16 @@ LogGamma(double x)
 	double Prelim;  /*  for the part before the series  */
 	double Series;
 	int i;
-	double denom;	
-	
+	double denom;
+
 	/*  We start off by computing Gamma(x+1) by the series:  */
-	
+
 	/*  compute the preliminary part  */
 	Prelim = (x+.5) * log(x+5.5) - (x+5.5);
 
 	/*  add the log of sqrt(2\pi) to that:  */
 	Prelim += 0.91893853320467274;
-	
+
 	/*  now compute the series.  Start with the constant term c_0  */
 	Series = 1.000000000190015;
 
@@ -1559,7 +1559,7 @@ LogGamma(double x)
 	for(i=0;i<6;i++)  {
 		Series += Coeff[i]/(++denom);
 	}
-	
+
 	/*  now we just have to return the right thing.  Since we just computed  */
 	/*  Recall Gamma(x+1) = x * Gamma(x), so we have to subtract log(x) from this.  */
 	/*  We can do this with only one call to log by dividing Series by x.  */
