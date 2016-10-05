@@ -5,7 +5,7 @@ OUTPUT_DIR=../bin/
 all: ENCprime SeqCount
 
 ENCprime: ENCprime.o
-	$(CC) $(OPTS) -lm -o $(OUTPUT_DIR)/ENCprime ENCprime.o
+	$(CC) $(OPTS) -o $(OUTPUT_DIR)/ENCprime ENCprime.o -lm
 ENCprime.o: ENCprime.c
 	$(CC) $(OPTS) -c ENCprime.c
 
