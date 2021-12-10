@@ -15,6 +15,17 @@ limitations.
 
 For full user documentation, consult ENCprimedoc.pdf
 
+===Note to users===
+
+The team at bioinfo.hr has made an R package that computes Nc' that 
+may be more accessible/useful to modern users: https://github.com/BioinfoHR/coRdon
+
+I say this as the C code here written in the summer of 2001 is showing its age and 
+portability issues seem to have arisen.  In particular, there is an unresolved bug 
+in SeqCount where it is miscounting the sequence length by 2 on at least some 
+systems, so I advise testing with a small test sample to make sure it is working well
+on your system. 
+
 === UNIX/Linux distribution ===
 
 For installation, type:
